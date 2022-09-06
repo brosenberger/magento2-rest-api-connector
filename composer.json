@@ -1,0 +1,25 @@
+{
+  "name": "brosenberger/magento2-rest-api-connector",
+  "type": "library",
+  "version": "0.0.1",
+  "description": "Library to communicate with a Magento2 Store",
+  "keywords":[ "guzzle", "rest api", "connector", "magento2"],
+  "authors": [
+    {
+      "name": "Benjamin Rosenberger",
+      "email": "bensch.rosenberger@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^7.5"
+  },
+  "require-dev":{
+    "composer/composer":"*@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "src\\BroCode\\Magento2RestApiConnector\\": ""
+    }
+  },
+  "license": "MIT"
+}
