@@ -18,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "src\\BroCode\\Magento2RestApiConnector\\": ""
+      "BroCode\\Magento2RestApiConnector\\": "src"
     }
   },
   "license": "MIT"

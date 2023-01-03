@@ -10,6 +10,7 @@ namespace BroCode\Magento2RestApiConnector\Services;
 
 use BroCode\Magento2RestApiConnector\Api\Magento2ClientConfiguration;
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -29,6 +30,47 @@ class ProductRestService
     public function __construct(RestExecutionService $restService)
     {
         $this->restService = $restService;
+    }
+
+    /**
+     * @param Magento2ClientConfiguration $configuration
+     * @param string $searchParam
+     * @param int $pageSize
+     * @param string $fields
+     * @param callable|null $rejected
+     * @param callable|null $fulfilled
+     * @return void
+     */
+    public function searchProductData(
+        $configuration,
+        $searchParam,
+        $pageSize = 10,
+        $fields = '',
+        callable $rejected = null,
+        callable $fulfilled = null
+    ) {
+        $this->restService->executeApiUpdate(
+            $configuration,
+            [['q' => $searchParam, 'pageSize'=>$pageSize, 'fields' => $fields]],
+            function($client, $record) {
+                $promise = new Promise();
+
+                $query = [
+                    'searchCriteria[page_size]' => $record['pageSize']
+                ];
+                if (!empty($fields)) {
+                    $query[$fields] = $fields;
+                }
+                /** @var Client $client */
+                $promise->resolve($client->get('rest/all/V1/products', [
+                    'query' => $query
+                ]));
+
+                return $promise;
+            },
+            $rejected,
+            $fulfilled
+        );
     }
 
     /**
