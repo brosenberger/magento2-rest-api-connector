@@ -45,17 +45,19 @@ class ProductRestService
         $configuration,
         $searchParam,
         $pageSize = 10,
+        $currentPage = 1,
         $fields = '',
         callable $rejected = null,
         callable $fulfilled = null
     ) {
         $this->restService->executeApiUpdate(
             $configuration,
-            [['q' => $searchParam, 'pageSize'=>$pageSize, 'fields' => $fields]],
+            [['q' => $searchParam, 'pageSize'=> $pageSize, 'currentPage' => $currentPage, 'fields' => $fields]],
             function($client, $record) {
                 $promise = new Promise();
                 $query = [
-                    'searchCriteria[page_size]' => $record['pageSize']
+                    'searchCriteria[page_size]' => $record['pageSize'],
+                    'searchCriteria[current_page]' => $record['currentPage'],
                 ];
                 if (!empty($record['q'])) {
                     $filterGroupCount = 0;
