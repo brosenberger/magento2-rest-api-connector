@@ -34,7 +34,7 @@ class ProductRestService
 
     /**
      * @param Magento2ClientConfiguration $configuration
-     * @param string $searchParam
+     * @param array $searchParam
      * @param int $pageSize
      * @param string $fields
      * @param callable|null $rejected
@@ -54,12 +54,25 @@ class ProductRestService
             [['q' => $searchParam, 'pageSize'=>$pageSize, 'fields' => $fields]],
             function($client, $record) {
                 $promise = new Promise();
-
                 $query = [
                     'searchCriteria[page_size]' => $record['pageSize']
                 ];
-                if (!empty($fields)) {
-                    $query[$fields] = $fields;
+                if (!empty($record['q'])) {
+                    $filterGroupCount = 0;
+                    $count = 0;
+                    foreach ($record['q'] as $filterGroup) {
+                        foreach ($filterGroup as $criteria)  {
+                            list($field,  $conditionType, $value) = $criteria;
+                            $query['searchCriteria[filter_groups][' . $filterGroupCount .'][filters]['.$count.'][field]']=$field;
+                            $query['searchCriteria[filter_groups][' . $filterGroupCount .'][filters]['.$count.'][value]']=$value;
+                            $query['searchCriteria[filter_groups][' . $filterGroupCount .'][filters]['.$count.'][condition_type]']=$conditionType;
+                            $count++;
+                        }
+                        $filterGroupCount++;
+                    }
+                }
+                if (!empty($record['fields'])) {
+                    $query['fields'] = $record['fields'];
                 }
                 /** @var Client $client */
                 $promise->resolve($client->get('rest/all/V1/products', [
