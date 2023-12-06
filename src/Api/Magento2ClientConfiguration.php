@@ -42,6 +42,10 @@ class Magento2ClientConfiguration
     protected $concurrentRequests;
 
     /**
+     * @var array
+     */
+    protected $additionalData = [];
+    /**
      * Magento2ClientConfiguration constructor.
      * @param string $baseUrl
      * @param string $headerAuthorization
@@ -93,5 +97,19 @@ class Magento2ClientConfiguration
     public function getConcurrentRequests()
     {
         return $this->concurrentRequests;
+    }
+
+    public function addAdditional($field, $value)
+    {
+        $this->additionalData[$field] = $value;
+        return $this;
+    }
+
+    public function getAdditional($field, $default=null)
+    {
+        if (isset($this->additionalData[$field])) {
+            return $this->additionalData[$field];
+        }
+        return $default;
     }
 }
